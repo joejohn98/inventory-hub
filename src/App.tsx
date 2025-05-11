@@ -9,8 +9,13 @@ function App() {
     <>
       <InventoryProvider>
          <Router>
-          <div>
+          <div className="flex">
             <Sidebar />
+            <div className='flex-1 min-h-screen'>
+              <Routes>
+                <Route path="/" element={} />
+              </Routes>
+            </div>
           </div>
          </Router>
         </InventoryProvider>
