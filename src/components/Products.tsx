@@ -1,4 +1,4 @@
-import  { useState} from 'react';
+import  { useEffect, useState} from 'react';
 import { Link} from 'react-router-dom';
 import { useInventory } from '../context/InventoryContext';
 
@@ -10,7 +10,31 @@ const Products: React.FC = () => {
   const [sortBy, setSortBy] = useState('name');
 
 
+  useEffect(() => {
+    let filtered = [...products]; // Create a copy to avoid mutating original array
 
+    // Apply department filter if not 'all'
+    if (department !== 'all') {
+      filtered = filtered.filter(p =>
+        p.department.toLowerCase() === department.toLowerCase()
+      );
+    }
+
+    // Apply low stock filter if checked
+    if (lowStock) {
+      filtered = filtered.filter(p => p.stock <= 10);
+    }
+
+    // Apply sorting
+    const sorted = [...filtered].sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name);
+      if (sortBy === 'price') return a.price - b.price;
+      if (sortBy === 'stock') return a.stock - b.stock;
+      return 0;
+    });
+
+    setFilteredProducts(sorted);
+  }, [products, department, lowStock, sortBy]);
 
 
   return (
