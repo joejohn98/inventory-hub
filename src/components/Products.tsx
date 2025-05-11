@@ -1,47 +1,57 @@
-import  { useEffect, useState} from 'react';
-import { Link} from 'react-router-dom';
-import { useInventory } from '../context/InventoryContext';
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useInventory } from "../context/InventoryContext";
 
 const Products: React.FC = () => {
   const { products } = useInventory();
   const [filteredProducts, setFilteredProducts] = useState(products);
-  const [department, setDepartment] = useState('all');
+  const [department, setDepartment] = useState("all");
   const [lowStock, setLowStock] = useState(false);
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState("name");
 
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const deptParams = searchParams.get("department");
+    if (deptParams) {
+      setDepartment(deptParams);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let filtered = [...products]; // Create a copy to avoid mutating original array
 
     // Apply department filter if not 'all'
-    if (department !== 'all') {
-      filtered = filtered.filter(p =>
-        p.department.toLowerCase() === department.toLowerCase()
+    if (department !== "all") {
+      filtered = filtered.filter(
+        (p) => p.department.toLowerCase() === department.toLowerCase()
       );
     }
 
     // Apply low stock filter if checked
     if (lowStock) {
-      filtered = filtered.filter(p => p.stock <= 10);
+      filtered = filtered.filter((p) => p.stock <= 10);
     }
 
     // Apply sorting
     const sorted = [...filtered].sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name);
-      if (sortBy === 'price') return a.price - b.price;
-      if (sortBy === 'stock') return a.stock - b.stock;
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      if (sortBy === "price") return a.price - b.price;
+      if (sortBy === "stock") return a.stock - b.stock;
       return 0;
     });
 
     setFilteredProducts(sorted);
   }, [products, department, lowStock, sortBy]);
 
-
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold">Products</h2>
-        <Link to="/products/add" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+        <Link
+          to="/products/add"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
           Add New Product
         </Link>
       </div>
@@ -76,7 +86,7 @@ const Products: React.FC = () => {
         </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredProducts.map(product => (
+        {filteredProducts.map((product) => (
           <Link
             key={product.id}
             to={`/products/${product.id}`}
@@ -89,14 +99,22 @@ const Products: React.FC = () => {
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-1">{product.name}</h3>
+            <h3 className="text-xl font-bold text-gray-800 mb-1">
+              {product.name}
+            </h3>
             <p className="text-sm text-gray-500 mb-3">{product.department}</p>
             <div className="flex justify-between items-center">
-              <p className="text-2xl font-extrabold text-blue-600">${product.price.toFixed(2)}</p>
-              <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                product.stock <= 10 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-              }`}>
-                {product.stock <= 10 ? 'Low Stock' : 'In Stock'}
+              <p className="text-2xl font-extrabold text-blue-600">
+                ${product.price.toFixed(2)}
+              </p>
+              <div
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  product.stock <= 10
+                    ? "bg-red-100 text-red-800"
+                    : "bg-green-100 text-green-800"
+                }`}
+              >
+                {product.stock <= 10 ? "Low Stock" : "In Stock"}
               </div>
             </div>
           </Link>
