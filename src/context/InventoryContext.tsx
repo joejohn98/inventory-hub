@@ -33,7 +33,7 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             const response = await fetch('https://run.mocky.io/v3/a7d24cab-cb3a-4b37-a0d8-8b6a75bf5aee');
             const data = await response.json();
             setProducts(data);
-        } catch () {
+        } catch (e) {
             toast.error('Failed to fetch products');
         }
     };

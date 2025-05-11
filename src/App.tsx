@@ -6,6 +6,8 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./components/Dashboard";
 import Departments from "./components/Departments";
 import Products from "./components/Products";
+import ProductDetails from "./components/ProductDetails";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -19,10 +21,12 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/departments" element={<Departments />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/products/:id" element={<ProductDetails />} />
               </Routes>
             </div>
           </div>
         </Router>
+          <ToastContainer position="top-right" />
       </InventoryProvider>
     </>
   );
