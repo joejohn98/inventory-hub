@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useInventory } from "../context/InventoryContext";
+import { Package } from "lucide-react";
 
 const Products: React.FC = () => {
   const { products } = useInventory();
@@ -85,41 +86,85 @@ const Products: React.FC = () => {
           <option value="stock">Sort by Stock</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filteredProducts.map((product) => (
-          <Link
-            key={product.id}
-            to={`/products/${product.id}`}
-            className="group bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-blue-200"
+       {filteredProducts.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
+          <Package size={48} className="mx-auto text-slate-400 mb-4" />
+          <h3 className="text-lg font-semibold text-slate-800 mb-2">
+            No products found
+          </h3>
+          <p className="text-slate-500 mb-4">
+            Try adjusting your search or filter criteria
+          </p>
+          <button
+
+            className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
           >
-            <div className="relative overflow-hidden rounded-lg aspect-square mb-4">
-              <img
-                src={product.imageUrl}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-1">
-              {product.name}
-            </h3>
-            <p className="text-sm text-gray-500 mb-3">{product.department}</p>
-            <div className="flex justify-between items-center">
-              <p className="text-2xl font-extrabold text-blue-600">
-                ${product.price.toFixed(2)}
-              </p>
-              <div
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                  product.stock <= 10
-                    ? "bg-red-100 text-red-800"
-                    : "bg-green-100 text-green-800"
-                }`}
-              >
-                {product.stock <= 10 ? "Low Stock" : "In Stock"}
+            Clear Filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <Link
+              key={product.id}
+              to={`/products/${product.id}`}
+              className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col h-full"
+            >
+              <div className="relative aspect-square bg-slate-50">
+                <img
+                  src={product.imageUrl || "/placeholder.svg"}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://placehold.co/400x400?text=No+Image";
+                  }}
+                />
+                {product.stock <= 10 && (
+                  <span className="absolute top-2 right-2 px-2 py-1 bg-rose-500 text-white text-xs font-medium rounded-md">
+                    Low Stock
+                  </span>
+                )}
               </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+
+              <div className="p-4 flex-1 flex flex-col">
+                <div className="mb-2">
+                  <span className="px-2 py-1 bg-slate-100 text-slate-600 text-xs font-medium rounded-md">
+                    {product.department}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-slate-800 mb-1 line-clamp-1">
+                  {product.name}
+                </h3>
+                <p className="text-slate-500 text-sm mb-3 line-clamp-2">
+                  {product.description}
+                </p>
+
+                <div className="mt-auto space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600 text-sm">Price:</span>
+                    <span className="font-semibold text-slate-800">
+                      ${product.price.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-600 text-sm">Stock:</span>
+                    <span
+                      className={`font-semibold ${
+                        product.stock <= 10
+                          ? "text-rose-600"
+                          : "text-emerald-600"
+                      }`}
+                    >
+                      {product.stock}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
