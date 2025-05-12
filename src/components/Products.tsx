@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { useInventory } from "../context/InventoryContext";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useInventory, type Product } from "../context/InventoryContext";
 import { Filter, Package, Plus, Search } from "lucide-react";
 
 const Products: React.FC = () => {
@@ -15,6 +15,8 @@ const Products: React.FC = () => {
 
   const [searchParams] = useSearchParams();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const deptParams = searchParams.get("department");
     if (deptParams) {
@@ -22,31 +24,68 @@ const Products: React.FC = () => {
     }
   }, [searchParams]);
 
+  const searchFilter = (product: Product) => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+      product.description.toLowerCase().includes(lowerCaseSearchTerm) ||
+      product.sku.toLowerCase().includes(lowerCaseSearchTerm)
+    );
+  };
+
+  const departmentFilter = (product: Product) => {
+    return (
+      department === "all" || product.department.toLowerCase() === department
+    );
+  };
+
+  const stockFilter = (product: Product) => {
+    return !lowStock || product.stock <= 10;
+  };
+
+  const sortProducts = (a: Product, b: Product) => {
+    let comparison = 0;
+
+    if (sortBy === "name") {
+      comparison = a.name.localeCompare(b.name);
+    } else if (sortBy === "price") {
+      comparison = a.price - b.price;
+    } else if (sortBy === "stock") {
+      comparison = a.stock - b.stock;
+    }
+
+    return sortOrder === "asc" ? comparison : -comparison;
+  };
+
+  const filterAndSortProducts = (products: Product[]) => {
+    return products
+      .filter(searchFilter)
+      .filter(departmentFilter)
+      .filter(stockFilter)
+      .sort((a: Product, b: Product) => sortProducts(a, b));
+  };
+
   useEffect(() => {
-    let filtered = [...products]; // Create a copy to avoid mutating original array
+    setFilteredProducts(filterAndSortProducts(products));
+  }, [products, department, lowStock, sortBy, sortOrder,searchTerm]);
 
-    // Apply department filter if not 'all'
-    if (department !== "all") {
-      filtered = filtered.filter(
-        (p) => p.department.toLowerCase() === department.toLowerCase()
-      );
+  const toggleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
     }
+  };
 
-    // Apply low stock filter if checked
-    if (lowStock) {
-      filtered = filtered.filter((p) => p.stock <= 10);
-    }
-
-    // Apply sorting
-    const sorted = [...filtered].sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      if (sortBy === "price") return a.price - b.price;
-      if (sortBy === "stock") return a.stock - b.stock;
-      return 0;
-    });
-
-    setFilteredProducts(sorted);
-  }, [products, department, lowStock, sortBy]);
+  const clearFilters = () => {
+    setDepartment("all");
+    setLowStock(false);
+    setSearchTerm("");
+    setSortBy("name");
+    setSortOrder("asc");
+    navigate("/products");
+  };
 
   return (
     <div className="p-4 md:p-8">
