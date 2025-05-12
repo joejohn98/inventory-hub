@@ -46,6 +46,11 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  // Get top 5 products with lowest stock
+  const lowStockProducts = [...products]
+    .sort((a, b) => a.stock - b.stock)
+    .slice(0, 5);
+
   return (
     <div className="p-4 md:p-8 space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
@@ -83,6 +88,61 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4">
+            Low Stock Alert
+          </h3>
+          {lowStockProducts.length > 0 ? (
+            <div className="space-y-4">
+              {lowStockProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between border-b border-slate-100 pb-3"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="h-10 w-10 rounded-md overflow-hidden bg-slate-100">
+                      <img
+                        src={product.imageUrl || "/placeholder.svg"}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://placehold.co/100x100?text=No+Image";
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium text-slate-800">
+                        {product.name}
+                      </p>
+                      <p className="text-sm text-slate-500">
+                        {product.department}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        product.stock <= 5
+                          ? "bg-rose-100 text-rose-800"
+                          : "bg-amber-100 text-amber-800"
+                      }`}
+                    >
+                      {product.stock} in stock
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-slate-500">No low stock items found.</p>
+          )}
+        </div>
+
+        
       </div>
     </div>
   );
