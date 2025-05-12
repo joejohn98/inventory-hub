@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useInventory } from "../context/InventoryContext";
-import { Filter, Package, Search } from "lucide-react";
+import { Filter, Package, Plus, Search } from "lucide-react";
 
 const Products: React.FC = () => {
   const { products } = useInventory();
@@ -49,18 +49,21 @@ const Products: React.FC = () => {
   }, [products, department, lowStock, sortBy]);
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold">Products</h2>
+    <div className="p-4 md:p-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
+          Products
+        </h2>
         <Link
           to="/products/add"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="mt-3 md:mt-0 inline-flex items-center px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
         >
+          <Plus size={18} className="mr-1.5" />
           Add New Product
         </Link>
       </div>
 
- <div className="bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
         <div className="p-4 flex flex-col md:flex-row gap-4 items-center">
           <div className="relative w-full md:w-auto md:flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -172,7 +175,7 @@ const Products: React.FC = () => {
         )}
       </div>
 
-       {filteredProducts.length === 0 ? (
+      {filteredProducts.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
           <Package size={48} className="mx-auto text-slate-400 mb-4" />
           <h3 className="text-lg font-semibold text-slate-800 mb-2">
@@ -181,10 +184,7 @@ const Products: React.FC = () => {
           <p className="text-slate-500 mb-4">
             Try adjusting your search or filter criteria
           </p>
-          <button
-
-            className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
-          >
+          <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm">
             Clear Filters
           </button>
         </div>
