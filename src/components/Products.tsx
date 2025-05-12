@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useInventory } from "../context/InventoryContext";
-import { Package } from "lucide-react";
+import { Filter, Package, Search } from "lucide-react";
 
 const Products: React.FC = () => {
   const { products } = useInventory();
@@ -9,6 +9,9 @@ const Products: React.FC = () => {
   const [department, setDepartment] = useState("all");
   const [lowStock, setLowStock] = useState(false);
   const [sortBy, setSortBy] = useState("name");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [searchParams] = useSearchParams();
 
@@ -56,36 +59,119 @@ const Products: React.FC = () => {
           Add New Product
         </Link>
       </div>
-      <div className="mb-4 flex space-x-4">
-        <select
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          className="p-2 border rounded"
-        >
-          <option value="all">All Departments</option>
-          <option value="kitchen">Kitchen</option>
-          <option value="clothing">Clothing</option>
-          <option value="toys">Toys</option>
-        </select>
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            checked={lowStock}
-            onChange={(e) => setLowStock(e.target.checked)}
-            className="mr-2"
-          />
-          Low Stock Only
-        </label>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="p-2 border rounded"
-        >
-          <option value="name">Sort by Name</option>
-          <option value="price">Sort by Price</option>
-          <option value="stock">Sort by Stock</option>
-        </select>
+
+ <div className="bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
+        <div className="p-4 flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative w-full md:w-auto md:flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search size={18} className="text-slate-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="inline-flex items-center px-3 py-2 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              <Filter size={18} className="mr-1.5" />
+              Filters
+            </button>
+
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center px-3 py-2 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        {isFilterOpen && (
+          <div className="p-4 border-t border-slate-200 bg-slate-50 rounded-b-xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Department
+                </label>
+                <select
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  className="w-full p-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
+                >
+                  <option value="all">All Departments</option>
+                  <option value="kitchen">Kitchen</option>
+                  <option value="clothing">Clothing</option>
+                  <option value="toys">Toys</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Sort By
+                </label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => toggleSort("name")}
+                    className={`flex-1 px-3 py-2 rounded-lg border ${
+                      sortBy === "name"
+                        ? "bg-teal-50 border-teal-200 text-teal-700"
+                        : "border-slate-200 text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    Name{" "}
+                    {sortBy === "name" && (sortOrder === "asc" ? "↑" : "↓")}
+                  </button>
+                  <button
+                    onClick={() => toggleSort("price")}
+                    className={`flex-1 px-3 py-2 rounded-lg border ${
+                      sortBy === "price"
+                        ? "bg-teal-50 border-teal-200 text-teal-700"
+                        : "border-slate-200 text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    Price{" "}
+                    {sortBy === "price" && (sortOrder === "asc" ? "↑" : "↓")}
+                  </button>
+                  <button
+                    onClick={() => toggleSort("stock")}
+                    className={`flex-1 px-3 py-2 rounded-lg border ${
+                      sortBy === "stock"
+                        ? "bg-teal-50 border-teal-200 text-teal-700"
+                        : "border-slate-200 text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    Stock{" "}
+                    {sortBy === "stock" && (sortOrder === "asc" ? "↑" : "↓")}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Stock Status
+                </label>
+                <label className="flex items-center p-2 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
+                  <input
+                    type="checkbox"
+                    checked={lowStock}
+                    onChange={(e) => setLowStock(e.target.checked)}
+                    className="mr-2 h-4 w-4 text-teal-500 focus:ring-teal-500 border-slate-300 rounded"
+                  />
+                  <span className="text-slate-700">Low Stock Only (≤ 10)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
        {filteredProducts.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
           <Package size={48} className="mx-auto text-slate-400 mb-4" />
