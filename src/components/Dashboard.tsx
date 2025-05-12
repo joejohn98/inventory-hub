@@ -142,7 +142,46 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
-        
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4">
+            Department Overview
+          </h3>
+          <div className="space-y-4">
+            {["Kitchen", "Clothing", "Toys"].map((dept) => {
+              const deptProducts = products.filter(
+                (p) => p.department === dept
+              );
+              const deptStock = deptProducts.reduce(
+                (sum, p) => sum + p.stock,
+                0
+              );
+              const deptPercentage =
+                products.length > 0
+                  ? Math.round((deptProducts.length / products.length) * 100)
+                  : 0;
+
+              return (
+                <div key={dept} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <p className="font-medium text-slate-700">{dept}</p>
+                    <p className="text-sm text-slate-500">
+                      {deptProducts.length} products
+                    </p>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-2.5">
+                    <div
+                      className="bg-teal-500 h-2.5 rounded-full"
+                      style={{ width: `${deptPercentage}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-slate-500">
+                    Total stock: {deptStock} items
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
