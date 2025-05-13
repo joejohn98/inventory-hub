@@ -223,7 +223,9 @@ const Products: React.FC = () => {
           <p className="text-slate-500 mb-4">
             Try adjusting your search or filter criteria
           </p>
-          <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm">
+          <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
+          onClick={clearFilters}
+          >
             Clear Filters
           </button>
         </div>
