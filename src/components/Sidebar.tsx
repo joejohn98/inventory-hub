@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleMenu, isMobile }) => {
   return (
     <div className={sidebarClasses}>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Inventory Hub<h1>
+        <h1 className="text-2xl font-bold">Inventory Hub</h1>
         {isMobile && (
           <button onClick={toggleMenu} className="p-2 rounded-md hover:bg-slate-700 transition-colors cursor-pointer">
             <X size={20} />

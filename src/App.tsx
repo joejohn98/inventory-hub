@@ -1,35 +1,35 @@
-
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import { InventoryProvider } from "./context/InventoryContext"
-import Sidebar from "./components/Sidebar"
-import Dashboard from "./components/Dashboard"
-import Departments from "./components/Departments"
-import Products from "./components/Products"
-import AddProduct from "./components/AddProduct"
-import ProductDetails from "./components/ProductDetails"
-import { useState, useEffect } from "react"
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { InventoryProvider } from "./context/InventoryContext";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./components/Dashboard";
+import Departments from "./components/Departments";
+import Products from "./components/Products";
+import AddProduct from "./components/AddProduct";
+import ProductDetails from "./components/ProductDetails";
+import NotFound from "./components/NotFound";
+import { useState, useEffect } from "react";
 
 export default function App() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
+      setIsMobile(window.innerWidth < 768);
       if (window.innerWidth >= 768) {
-        setIsMobileMenuOpen(false)
+        setIsMobileMenuOpen(false);
       }
-    }
+    };
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
     <InventoryProvider>
@@ -49,13 +49,22 @@ export default function App() {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               </button>
             </div>
           )}
 
-          <Sidebar isOpen={isMobileMenuOpen} toggleMenu={toggleMobileMenu} isMobile={isMobile} />
+          <Sidebar
+            isOpen={isMobileMenuOpen}
+            toggleMenu={toggleMobileMenu}
+            isMobile={isMobile}
+          />
 
           <div className="flex-1 transition-all duration-300">
             <div className="max-w-7xl mx-auto">
@@ -65,6 +74,7 @@ export default function App() {
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/add" element={<AddProduct />} />
                 <Route path="/products/:id" element={<ProductDetails />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
           </div>
@@ -84,5 +94,5 @@ export default function App() {
         toastClassName="shadow-lg rounded-lg"
       />
     </InventoryProvider>
-  )
+  );
 }
