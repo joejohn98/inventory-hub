@@ -67,7 +67,7 @@ const Products: React.FC = () => {
 
   useEffect(() => {
     setFilteredProducts(filterAndSortProducts(products));
-  }, [products, department, lowStock, sortBy, sortOrder,searchTerm]);
+  }, [products, department, lowStock, sortBy, sortOrder, searchTerm]);
 
   const toggleSort = (field: string) => {
     if (sortBy === field) {
@@ -223,8 +223,9 @@ const Products: React.FC = () => {
           <p className="text-slate-500 mb-4">
             Try adjusting your search or filter criteria
           </p>
-          <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
-          onClick={clearFilters}
+          <button
+            className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors shadow-sm"
+            onClick={clearFilters}
           >
             Clear Filters
           </button>
@@ -271,7 +272,7 @@ const Products: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-slate-600 text-sm">Price:</span>
                     <span className="font-semibold text-slate-800">
-                      ${product.price.toFixed(2)}
+                      ${Number(product.price).toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
