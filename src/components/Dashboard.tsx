@@ -10,6 +10,8 @@ const Dashboard: React.FC = () => {
     (sum, product) => sum + product.delivered,
     0
   );
+   
+
   const lowStockItems = products.filter(
     (product) => product.stock <= 10
   ).length;
@@ -89,6 +91,8 @@ const Dashboard: React.FC = () => {
           </div>
         ))}
       </div>
+
+      
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
