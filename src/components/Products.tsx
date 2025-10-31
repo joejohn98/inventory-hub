@@ -151,6 +151,7 @@ const Products: React.FC = () => {
                   <option value="kitchen">Kitchen</option>
                   <option value="clothing">Clothing</option>
                   <option value="toys">Toys</option>
+                  <option value="electronics">Electronics</option>
                 </select>
               </div>
 

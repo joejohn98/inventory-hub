@@ -33,11 +33,11 @@ export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          "https://mp66d7764cc4c25afca9.free.beeceptor.com/api/products"
+          "https://dummyjson.com/c/4ebe-d7db-42ab-b832"
         );
         const data = await response.json();
         setProducts(data);
-      } catch (e) {
+      } catch (_e) {
         toast.error("Failed to fetch products");
       }
     };
